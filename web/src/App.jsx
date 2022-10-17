@@ -47,7 +47,7 @@ function App() {
       url: "http://localhost:5001/signup",
       data: formData,
       headers: { 'Content-Type': 'multipart/form-data' },
-      // withCredentials: true
+      withCredentials: true
     })
       .then(res => {
         console.log(`upload Success` + res.data);
