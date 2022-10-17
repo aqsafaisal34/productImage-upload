@@ -55,7 +55,7 @@ app.use(express.json()); // parsing body
 
 
 app.use(cors({
-    origin: ['http://localhost:3000', "*"],
+    origin: ['http://localhost:3000',https://super-cool-site-by-aqsay-faisal34-gmail-com-64ff6.netlify.app/, "*"],
     credentials: true
 }));
 
