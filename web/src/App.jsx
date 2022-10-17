@@ -2,115 +2,109 @@ import './App.css';
 import axios from 'axios';
 import { useEffect, useState } from "react";
 
+
 function App() {
 
-const [productname, setproductname] = useState("")
-const [productdescription, setproductdescription] = useState("")
-const [ productprice, setproductprice] = useState("")
-const [ productcode, setproductcode] = useState("")
+  const [Name, setName] = useState("")
+  const [Email, setEmail] = useState("")
+  const [Password, setPassword] = useState("")
 
-const [products, setproducts] = useState([]);
-const [toggleRefresh, setToggleRefresh] = useState(true);
+  const [users, setUsers] = useState([])
+  const [toggleRefresh, setToggleRefresh] = useState(true)
 
-useEffect(() => {
+  useEffect(() => {
 
-  let getAllProducts = async () => {
-    let response = await axios.get('http://localhost:5001/users');
-    setproducts(response.data.data)
-  }
-  getAllProducts();
+    let getAllUsers = async () => {
+      let response = await axios.get('http://localhost:5001/users');
+      setUsers(response.data.data)
+    }
+    getAllUsers();
 
-}, [toggleRefresh])
-
+  }, [toggleRefresh])
 
 
 
 
-  const addProduct = async (e) => {
+
+  const doSignup = async (e) => {
     e.preventDefault();
 
-    
-    var productImage = document.getElementById("productImage");
-    console.log("fileInput: ", productImage.files); // local url
-
+    var profilePictureInput = document.getElementById("profilePictureInput");
+    console.log("fileInput: ", profilePictureInput.files); // local url
 
     let formData = new FormData();
     // https://developer.mozilla.org/en-US/docs/Web/API/FormData/append#syntax
 
 
-    formData.append("productname", productname); // this is how you add some text data along with file
-    formData.append("productdescription", productdescription); // this is how you add some text data along with file
-    formData.append("productprice", productprice); // this is how you add some text data along with file
-     formData.append("productcode", productcode); // this is how you add some text data along with file
-
-    formData.append("productImage", productImage.files[0]); // file input is for browser only, use fs to read file in nodejs client
+    formData.append("name", Name); // this is how you add some text data along with file
+    formData.append("email", Email); // this is how you add some text data along with file
+    formData.append("password", Password); // this is how you add some text data along with file
+    formData.append("profilePicture", profilePictureInput.files[0]); // file input is for browser only, use fs to read file in nodejs client
 
 
     axios({
       method: 'post',
-      url: "http://localhost:5001/",
+      url: "http://localhost:5001/signup",
       data: formData,
       headers: { 'Content-Type': 'multipart/form-data' },
       // withCredentials: true
     })
       .then(res => {
         console.log(`upload Success` + res.data);
-        setToggleRefresh(!toggleRefresh);
-        
+        setToggleRefresh(!toggleRefresh)
       })
       .catch(err => {
         console.log(err);
       })
-
-
   }
 
 
+  return (
+    <div>
 
-    return (
-      <div className="App">
+      <form onSubmit={doSignup}>
+        Name: <input name="name" type="text" placeholder="Name" id='name' onChange={(e)=>{setName(e.target.value)}} />
+        <br />
+        Email: <input name="email" type="email" placeholder="Email" id='email' onChange={(e)=>{setEmail(e.target.value)}} />
+        <br />
+        Password: <input name="password" type="password" placeholder="Password" id='password' onChange={(e)=>{setPassword(e.target.value)}} />
+        <br />
 
-        <form onSubmit={addProduct} >
-          Product Name: <input name="productname" type="text" required id="productname" onChange={(e)=>{setproductname(e.target.value)}} />
-          <br />
-          Description: <input name="productdescription" type="text"  required id="productdescription" onChange={(e)=>{setproductdescription(e.target.value)}} />
-          <br />
-          Price: <input name="productprice" type="number"  required id="productprice" onChange={(e)=>{setproductprice(e.target.value)}}  />
-          <br />
-          Code: <input name="productcode" type="number"  required id="productcode" onChange={(e)=>{setproductcode(e.target.value)}} />
-          <br />
-          Picture: <input name="productImage" type="file" id="productImage" accept="image/*" onChange={() => {
+        Profile Picture: <input type="file" id="profilePictureInput" accept='image/*'
+          onChange={() => {
             ////// to display imager instantly on screen
-            var productImage = document.getElementById("productImage");
-            var url = URL.createObjectURL(productImage.files[0])
+            var profilePictureInput = document.getElementById("profilePictureInput");
+            var url = URL.createObjectURL(profilePictureInput.files[0])
             console.log("url: ", url);
             document.getElementById("img").innerHTML = `<img width="200px" src="${url}" alt="" id="img"> `
-          }}
-          />
+          }} />
 
-          <div id="img"></div>
-          <br />
-          <br />
-          <button type="submit">Add Product</button>
+        <div id="img"></div>
 
-        </form>
-
-        <h1>Products List: </h1>
-
-<div>
-  {products.map(eachproduct => (
-    <div key={eachproduct.id}>
-      <span>{eachproduct.productname}</span>
-      <span>{eachproduct.productdescription}</span>
-      <img width="100px" src={eachproduct.profilePicture} alt="" />
-    </div>
-  ))}
-</div>
+        <br />
+        <button type='submit'>Signup</button>
+      </form>
 
 
+      <h1>Users List: </h1>
+
+      <div>
+        {users.map(eachUser => (
+          <div key={eachUser.id}>
+            <span>{eachUser.name}</span>
+            <span>{eachUser.email}</span>
+            <img width="100px" src={eachUser.profilePicture} alt="" />
+          </div>
+        ))}
       </div>
-    );
-  }
-  export default App;
 
 
+
+
+
+      
+    </div>
+  );
+}
+
+export default App;
